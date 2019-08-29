@@ -9,6 +9,7 @@ using StoreLib.Services;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace StoreBot
 {
@@ -36,6 +37,9 @@ namespace StoreBot
         {
             if (message.Content.StartsWith("$"))
             {
+#if DEBUG
+                await message.Channel.SendMessageAsync($"StoreBot is running in DEBUG mode. Output will be verbose.");
+#endif
                 switch (message.Content)
                 {
                     case "$DEV":
@@ -105,28 +109,46 @@ namespace StoreBot
             }
             MoreDetailsHelper.AppendLine("`");
             IList<Uri> FileUris = await dcat.GetPackagesForProduct();
-            MoreDetailsHelper.AppendLine($"Packages: (1/2)\n");
+#if DEBUG
+            await message.Channel.SendMessageAsync($"Found {FileUris.Count} FE3 Links.");
+#endif
+            MoreDetailsHelper.AppendLine($"Packages: (1/3)\n");
             await message.Channel.SendMessageAsync(MoreDetailsHelper.ToString());
             StringBuilder packages = new StringBuilder();
-            packages.AppendLine("(2/2)");
-            foreach (Uri fileuri in FileUris)
-            {
-                packages.AppendLine(fileuri.ToString());
-            }
             List<string> packagelist = new List<string>(Regex.Split(packages.ToString(), @"(?<=\G.{1999})", RegexOptions.Singleline));
-            foreach(string package in packagelist)
+            if (displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages.Count > 0)
             {
-                await message.Channel.SendMessageAsync(package);
+                try
+                {
+                    foreach (var Package in displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].PackageDownloadUris)
+                    {
+                        packages.AppendLine($"Xbox Live Package: {Package.Uri}");
+                    }
+                }
+                catch { }
             }
-            //await message.Channel.SendMessageAsync(packages.ToString().Substring(0, 1999));
-
             /*
-            string xml = await FE3Handler.SyncUpdatesAsync(displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.FulfillmentData.WuCategoryId);
-            IList<string> RevisionIds = new List<string>();
-            IList<string> PackageNames = new List<string>();
-            IList<string> UpdateIDs = new List<string>();
-            FE3Handler.ProcessUpdateIDs(xml, out RevisionIds, out PackageNames, out UpdateIDs);
+            
             */
+            packages.AppendLine($"(2/3)");
+            await message.Channel.SendMessageAsync(packages.ToString());
+            if (FileUris.Count > 0)
+            {
+                foreach (Uri uri in FileUris)
+                {
+                    packagelist.Add(uri.ToString());
+                }
+            }
+            foreach (string downloaduri in packagelist)
+            {
+                try
+                {
+                    await message.Channel.SendMessageAsync(downloaduri);
+                }
+                catch { }
+            }
+            
+            await message.Channel.SendMessageAsync("(3/3)");
         }
 
 

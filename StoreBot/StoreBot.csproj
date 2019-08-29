@@ -13,12 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.0.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="StoreLib">
-      <HintPath>..\..\StoreLib\StoreLib\bin\Release\netstandard2.0\StoreLib.dll</HintPath>
-    </Reference>
+    <PackageReference Include="StoreLib" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
