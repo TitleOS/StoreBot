@@ -33,7 +33,7 @@ namespace StoreBot
 
         public Settings()
         {
-            string[] rawsettings = File.ReadAllLines("settings.confg");
+            string[] rawsettings = File.ReadAllLines("settings.config");
             string[] NumberOfSearchResultsRaw = rawsettings[0].Split("=");
             string[] AuthTokenRaw = rawsettings[1].Split("=");
             this.NumberOfSearchResults = int.Parse(NumberOfSearchResultsRaw[1]);
