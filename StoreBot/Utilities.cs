@@ -24,4 +24,22 @@ namespace StoreBot
 
 
     }
+
+    public class Settings
+    {
+        public int NumberOfSearchResults;
+        public string AuthToken;
+
+
+        public Settings()
+        {
+            string[] rawsettings = File.ReadAllLines("settings.confg");
+            string[] NumberOfSearchResultsRaw = rawsettings[0].Split("=");
+            string[] AuthTokenRaw = rawsettings[1].Split("=");
+            this.NumberOfSearchResults = int.Parse(NumberOfSearchResultsRaw[1]);
+            this.AuthToken = AuthTokenRaw[1];
+        }
+
+
+    }
 }

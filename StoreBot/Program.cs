@@ -21,7 +21,8 @@ namespace StoreBot
             Console.WriteLine($"StoreBot - {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
             Console.WriteLine("Connecting to Discord services....");
             DiscordSocketClient client = new DiscordSocketClient();
-            await client.LoginAsync(TokenType.Bot, "NDU2MjkyMzQzMjg5NzQxMzg0.DgIbEA.ju69RwrT7auOtNxu8g73Cg9-_o4");
+            Settings settings = new Settings();
+            await client.LoginAsync(TokenType.Bot, settings.AuthToken);
             await client.StartAsync();
             client.MessageReceived += MessageReceived;
             Console.WriteLine($"Connected to Discord services");
@@ -74,6 +75,16 @@ namespace StoreBot
                 {
                     await message.Channel.SendMessageAsync("No Product was Found.");
                 }
+            }
+            else if (message.Content.StartsWith("*X")) //Search with Xbox Device Family
+            {
+                DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
+                DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), StoreLib.DataContracts.DeviceFamily.Universal);
+            }
+            else if (message.Content.StartsWith("*D")) //Search with Desktop Device Family
+            {
+                DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
+                DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), StoreLib.DataContracts.DeviceFamily.Desktop);
             }
 
         }
