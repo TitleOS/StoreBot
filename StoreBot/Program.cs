@@ -16,13 +16,14 @@ namespace StoreBot
     class Program
     {
         public static DisplayCatalogHandler dcat;
+        public static Settings settingsinstance;
         static async Task Main(string[] args)
         {
             Console.WriteLine($"StoreBot - {System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}");
             Console.WriteLine("Connecting to Discord services....");
             DiscordSocketClient client = new DiscordSocketClient();
-            Settings settings = new Settings();
-            await client.LoginAsync(TokenType.Bot, settings.AuthToken);
+            settingsinstance = new Settings();
+            await client.LoginAsync(TokenType.Bot, settingsinstance.AuthToken);
             await client.StartAsync();
             client.MessageReceived += MessageReceived;
             Console.WriteLine($"Connected to Discord services");
@@ -59,6 +60,7 @@ namespace StoreBot
                         dcat = new DisplayCatalogHandler(StoreLib.DataContracts.DCatEndpoint.Xbox, new StoreLib.DataContracts.Locale(StoreLib.DataContracts.Market.US, StoreLib.DataContracts.Lang.en, true));
                         await message.Channel.SendMessageAsync($"DCAT Endpoint was changed to {message.Content}");
                         break;
+
                 }
                 if (message.Content.Length != 13)
                 {
@@ -80,11 +82,30 @@ namespace StoreBot
             {
                 DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
                 DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), StoreLib.DataContracts.DeviceFamily.Universal);
+                int count = 0;
+                foreach(Result R in SearchResults.Results)
+                {
+                    while (settingsinstance.NumberOfSearchResults >= count)
+                    {
+                        await message.Channel.SendMessageAsync(R.Products[0].Title);
+                        count++;
+                    }
+                }
             }
             else if (message.Content.StartsWith("*D")) //Search with Desktop Device Family
             {
                 DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
                 DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), StoreLib.DataContracts.DeviceFamily.Desktop);
+                int count = 0;
+                foreach (Result R in SearchResults.Results)
+                {
+                    while (settingsinstance.NumberOfSearchResults >= count)
+                    {
+                        await message.Channel.SendMessageAsync(R.Products[0].Title);
+                        count++;
+                    }
+                    
+                }
             }
 
         }
