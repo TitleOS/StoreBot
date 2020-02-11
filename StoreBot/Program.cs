@@ -29,7 +29,7 @@ namespace StoreBot
             Console.WriteLine($"Connected to Discord services");
             await Utilities.Log($"Logged into Discord at {System.DateTime.Now}");
             await client.SetGameAsync("DisplayCatalog", null, ActivityType.Watching);
-            dcat = new DisplayCatalogHandler(StoreLib.DataContracts.DCatEndpoint.Production, new StoreLib.DataContracts.Locale(StoreLib.DataContracts.Market.US, StoreLib.DataContracts.Lang.en, true));
+            dcat = new DisplayCatalogHandler(DCatEndpoint.Production, new Locale(Market.US, Lang.en, true));
             await Task.Delay(-1);
             
         }
@@ -45,19 +45,19 @@ namespace StoreBot
                 switch (message.Content)
                 {
                     case "$DEV":
-                        dcat = new DisplayCatalogHandler(StoreLib.DataContracts.DCatEndpoint.Dev, new StoreLib.DataContracts.Locale(StoreLib.DataContracts.Market.US, StoreLib.DataContracts.Lang.en, true));
+                        dcat = new DisplayCatalogHandler(DCatEndpoint.Dev, new Locale(Market.US, Lang.en, true));
                         await message.Channel.SendMessageAsync($"DCAT Endpoint was changed to {message.Content}");
                         break;
                     case "$INT":
-                        dcat = new DisplayCatalogHandler(StoreLib.DataContracts.DCatEndpoint.Int, new StoreLib.DataContracts.Locale(StoreLib.DataContracts.Market.US, StoreLib.DataContracts.Lang.en, true));
+                        dcat = new DisplayCatalogHandler(DCatEndpoint.Int, new Locale(Market.US, Lang.en, true));
                         await message.Channel.SendMessageAsync($"DCAT Endpoint was changed to {message.Content}");
                         break;
                     case "$PROD":
-                        dcat = new DisplayCatalogHandler(StoreLib.DataContracts.DCatEndpoint.Production, new StoreLib.DataContracts.Locale(StoreLib.DataContracts.Market.US, StoreLib.DataContracts.Lang.en, true));
+                        dcat = new DisplayCatalogHandler(DCatEndpoint.Production, new Locale(Market.US, Lang.en, true));
                         await message.Channel.SendMessageAsync($"DCAT Endpoint was changed to {message.Content}");
                         break;
                     case "$XBOX":
-                        dcat = new DisplayCatalogHandler(StoreLib.DataContracts.DCatEndpoint.Xbox, new StoreLib.DataContracts.Locale(StoreLib.DataContracts.Market.US, StoreLib.DataContracts.Lang.en, true));
+                        dcat = new DisplayCatalogHandler(DCatEndpoint.Xbox, new Locale(Market.US, Lang.en, true));
                         await message.Channel.SendMessageAsync($"DCAT Endpoint was changed to {message.Content}");
                         break;
 
@@ -81,7 +81,7 @@ namespace StoreBot
             else if (message.Content.StartsWith("*X")) //Search with Xbox Device Family
             {
                 DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
-                DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), StoreLib.DataContracts.DeviceFamily.Universal);
+                DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), DeviceFamily.Universal);
                 int count = 0;
                 foreach(Result R in SearchResults.Results)
                 {
@@ -95,7 +95,7 @@ namespace StoreBot
             else if (message.Content.StartsWith("*D")) //Search with Desktop Device Family
             {
                 DisplayCatalogHandler dcathandler = DisplayCatalogHandler.ProductionConfig();
-                DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), StoreLib.DataContracts.DeviceFamily.Desktop);
+                DCatSearch SearchResults = await dcathandler.SearchDCATAsync(message.Content.Substring(2), DeviceFamily.Desktop);
                 int count = 0;
                 foreach (Result R in SearchResults.Results)
                 {
@@ -140,7 +140,7 @@ namespace StoreBot
                 MoreDetailsHelper.AppendLine($"EAppx Key ID: {displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].KeyId}");
             }
             MoreDetailsHelper.AppendLine("`");
-            IList<Uri> FileUris = await dcat.GetPackagesForProduct();
+            IList<Uri> FileUris = await dcat.GetPackagesForProductAsync();
 #if DEBUG
             await message.Channel.SendMessageAsync($"Found {FileUris.Count} FE3 Links.");
 #endif
