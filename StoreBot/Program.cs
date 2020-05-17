@@ -140,16 +140,18 @@ namespace StoreBot
                 MoreDetailsHelper.AppendLine($"EAppx Key ID: {displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].KeyId}");
             }
             MoreDetailsHelper.AppendLine("`");
-            IList<Uri> FileUris = await dcat.GetPackagesForProductAsync();
+            IList<PackageInstance> packageInstances = await dcat.GetPackagesForProductAsync();
 #if DEBUG
-            await message.Channel.SendMessageAsync($"Found {FileUris.Count} FE3 Links.");
+            await message.Channel.SendMessageAsync($"Found {packageInstances.Count} packages.");
 #endif
             MoreDetailsHelper.AppendLine($"Packages: (1/3)\n");
             await message.Channel.SendMessageAsync(MoreDetailsHelper.ToString());
             StringBuilder packages = new StringBuilder();
             List<string> packagelist = new List<string>(Regex.Split(packages.ToString(), @"(?<=\G.{1999})", RegexOptions.Singleline));
+            /*
             if (displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages.Count > 0)
             {
+                Debug.WriteLine(displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages.Count);
                 try
                 {
                     foreach (var Package in displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].PackageDownloadUris)
@@ -159,23 +161,17 @@ namespace StoreBot
                 }
                 catch { }
             }
+            */
             /*
             
             */
             packages.AppendLine($"(2/3)");
             await message.Channel.SendMessageAsync(packages.ToString());
-            if (FileUris.Count > 0)
-            {
-                foreach (Uri uri in FileUris)
-                {
-                    packagelist.Add(uri.ToString());
-                }
-            }
-            foreach (string downloaduri in packagelist)
+            foreach (PackageInstance package in packageInstances)
             {
                 try
                 {
-                    await message.Channel.SendMessageAsync(downloaduri);
+                    await message.Channel.SendMessageAsync($"{package.PackageMoniker} : {package.PackageType} : {package.PackageUri}");
                 }
                 catch { }
             }
