@@ -29,7 +29,6 @@ namespace StoreBot
             Console.WriteLine($"Connected to Discord services");
             await Utilities.Log($"Logged into Discord at {System.DateTime.Now}");
             await client.SetGameAsync("DisplayCatalog", null, ActivityType.Watching);
-            dcat = new DisplayCatalogHandler(DCatEndpoint.Production, new Locale(Market.US, Lang.en, true));
             await Task.Delay(-1);
             
         }
@@ -39,6 +38,7 @@ namespace StoreBot
         {
             if (message.Content.StartsWith("$"))
             {
+                dcat = DisplayCatalogHandler.ProductionConfig();
 #if DEBUG
                 await message.Channel.SendMessageAsync($"StoreBot is running in DEBUG mode. Output will be verbose.");
 #endif
@@ -60,6 +60,13 @@ namespace StoreBot
                         dcat = new DisplayCatalogHandler(DCatEndpoint.Xbox, new Locale(Market.US, Lang.en, true));
                         await message.Channel.SendMessageAsync($"DCAT Endpoint was changed to {message.Content}");
                         break;
+#if DEBUG
+                    case "$STOP":
+                        await message.Channel.SendMessageAsync($"StoreBot is shutting down. Thanks for playing FE3.");
+                        await Utilities.Log(new LogMessage(LogSeverity.Info, message.Channel.Name, "StoreBot is shutting down. Thanks for playing FE3."));
+                        System.Environment.Exit(0);
+                        break;
+#endif
 
                 }
                 if (message.Content.Length != 13)
@@ -148,23 +155,25 @@ namespace StoreBot
             await message.Channel.SendMessageAsync(MoreDetailsHelper.ToString());
             StringBuilder packages = new StringBuilder();
             List<string> packagelist = new List<string>(Regex.Split(packages.ToString(), @"(?<=\G.{1999})", RegexOptions.Singleline));
-            /*
+            
             if (displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages.Count > 0)
             {
                 Debug.WriteLine(displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages.Count);
-                try
+                if (displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages.Count != 0)
                 {
-                    foreach (var Package in displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].PackageDownloadUris)
+                    //For some weird reason, some listings report having packages when really they don't have one hosted. This checks the child to see if the package is really null or not.
+                    if (!object.ReferenceEquals(displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].PackageDownloadUris, null))
                     {
-                        packages.AppendLine($"Xbox Live Package: {Package.Uri}");
+                        foreach (var Package in displayCatalogModel.Product.DisplaySkuAvailabilities[0].Sku.Properties.Packages[0].PackageDownloadUris)
+                        {
+                            packages.AppendLine($"Xbox Live Package: {Package.Uri}");
+                        }
                     }
                 }
-                catch { }
+               
+                
             }
-            */
-            /*
             
-            */
             packages.AppendLine($"(2/3)");
             await message.Channel.SendMessageAsync(packages.ToString());
             foreach (PackageInstance package in packageInstances)
