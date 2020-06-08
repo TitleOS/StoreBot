@@ -1,16 +1,16 @@
-# StoreBot - WIP
+# StoreBot - Legacy
 StoreBot is a *work in progress* Discord bot that makes use of [StoreLib](https://github.com/TitleOS/StoreLib). Current features include printing of moderate listing details and FE3 package links.
 
 ## Usage:
 
-Clone the repo and build StoreBot using Visual Studio 2019. Define your [Discord Bot Token](https://discordapp.com/developers/applications) in settings.config, on the AuthToken line.
+Clone the repo and build StoreBot using Visual Studio 2019. Define your [Discord Bot Token](https://discordapp.com/developers/applications) in settings.config, on the AuthToken line or via a *user* environment variable named "STOREBOTTOKEN".
 Run StoreBot.dll using the .net core runtime:
 ```
 dotnet.exe StoreBot.dll
 ```
+You can also download the self-contained exe for Windows from Releases.
+
 Once StoreBot logs into Discord, invite the bot to the server of your choice then refer to commands below.
-
-
 
 ### Commands:
 
