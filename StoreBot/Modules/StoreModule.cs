@@ -38,8 +38,15 @@ namespace StoreBot.Modules
                 List<string> packagelist = new List<string>(Regex.Split(m.ToString(), @"(?<=\G.{1999})", RegexOptions.Singleline));
                 foreach(string s in packagelist)
                 {
-                    await Context.Channel.SendMessageAsync(s);
-
+                    Console.WriteLine(s.Length);
+                    packagelist = new List<string>(Regex.Split(s.ToString(), @"(?<=\G.{1999})", RegexOptions.Singleline));
+                    foreach(string mm in packagelist)
+                    {
+                        if (!String.IsNullOrEmpty(mm))
+                        {
+                            await Context.Channel.SendMessageAsync(mm);
+                        }
+                    }
                 }
             }
         }
