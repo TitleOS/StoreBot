@@ -8,7 +8,7 @@ Run StoreBot.dll using the .NET 5 runtime:
 ```
 dotnet StoreBot.dll or StoreBot.exe
 ```
-Once StoreBot logs into Discord, invite the bot to the server of your choice then refer to commands below.
+Once StoreBot logs into Discord, invite the bot to the server of your choice, then refer to the "Commands" section below.
 
 
 ### Commands:
