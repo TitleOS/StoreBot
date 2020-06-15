@@ -33,7 +33,7 @@ namespace StoreBot.Services
                 MoreDetailsHelper.AppendLine($"SandboxID: {dcat.ProductListing.Product.SandboxID}");
             }
 
-            foreach (AlternateId ID in dcat.ProductListing.Product.AlternateIds) //Dynamicly add any other ID(s) that might be present rather than doing a ton of null checks.
+            foreach (AlternateId ID in dcat.ProductListing.Product.AlternateIds) //Dynamically add any other ID(s) that might be present rather than doing a ton of null checks.
             {
                 MoreDetailsHelper.AppendLine($"{ID.IdType}: {ID.Value}");
             }
@@ -97,7 +97,7 @@ namespace StoreBot.Services
                 MoreDetailsHelper.AppendLine($"SandboxID: {dcat.ProductListing.Product.SandboxID}");
             }
 
-            foreach (AlternateId ID in dcat.ProductListing.Product.AlternateIds) //Dynamicly add any other ID(s) that might be present rather than doing a ton of null checks.
+            foreach (AlternateId ID in dcat.ProductListing.Product.AlternateIds) //Dynamically add any other ID(s) that might be present rather than doing a ton of null checks.
             {
                 MoreDetailsHelper.AppendLine($"{ID.IdType}: {ID.Value}");
             }
