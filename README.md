@@ -1,3 +1,5 @@
+# Development has been moved to https://github.com/StoreDev/StoreBot
+
 # StoreBot - WIP
 StoreBot is a *work in progress* Discord bot that makes use of [StoreLib](https://github.com/TitleOS/StoreLib). Current features include printing of moderate listing details and FE3 package links.
 
